@@ -57,8 +57,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=150, unique=True)),
                 ('description', models.TextField()),
-                ('actors', models.ManyToManyField(blank=True, related_name='plays', to='theater.actor')),
-                ('genres', models.ManyToManyField(blank=True, related_name='plays', to='theater.genre')),
+                ('actors', models.ManyToManyField(blank=True, related_name='plays', to='theatre.actor')),
+                ('genres', models.ManyToManyField(blank=True, related_name='plays', to='theatre.genre')),
             ],
         ),
         migrations.CreateModel(
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('show_time', models.DateTimeField()),
-                ('play', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='performances', to='theater.play')),
+                ('play', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='performances', to='theatre.play')),
             ],
         ),
     ]

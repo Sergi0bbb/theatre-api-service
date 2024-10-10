@@ -1,13 +1,15 @@
+from datetime import datetime
+
 from rest_framework import mixins, viewsets
 from rest_framework.viewsets import GenericViewSet
 
-from theater.models import Genre, Actor, Play
-from theater.serealizers import (
+from theatre.models import Genre, Actor, Play, TheatreHall
+from theatre.serealizers import (
     GenreSerializer,
     ActorSerializer,
     PlaySerializer,
     PlayListSerializer,
-    PlayDetailSerializer
+    PlayDetailSerializer, TheatreHallSerializer
 )
 
 
@@ -63,3 +65,14 @@ class PlayViewSet(
         elif self.action == "retrieve":
             return PlayDetailSerializer
         return PlaySerializer
+
+
+class TheatreHallViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    queryset = TheatreHall.objects.all()
+    serializer_class = TheatreHallSerializer
+
+
