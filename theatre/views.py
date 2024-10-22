@@ -16,7 +16,6 @@ from theatre.models import (
     Reservation
 )
 from theatre.pagination import ReservationPagination
-from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly
 from theatre.serializers import (
     GenreSerializer,
     ActorSerializer,
@@ -40,7 +39,6 @@ class GenreViewSet(
 ):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class ActorViewSet(
@@ -50,7 +48,6 @@ class ActorViewSet(
 ):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class PlayViewSet(
@@ -61,7 +58,6 @@ class PlayViewSet(
 ):
     queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     @staticmethod
     def _params_to_ints(qs):
@@ -89,7 +85,7 @@ class PlayViewSet(
             return PlayDetailSerializer
         elif self.action == "upload_image":
             return PlayImageSerializer
-        return PlaySerializer
+        return self.serializer_class
 
     @action(
         methods=["POST"],
@@ -137,7 +133,6 @@ class TheatreHallViewSet(
 ):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class PerformanceViewSet(
@@ -157,7 +152,6 @@ class PerformanceViewSet(
         )
     )
     serializer_class = PerformanceSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         play_id = self.request.query_params.get("play")
@@ -180,11 +174,9 @@ class PerformanceViewSet(
     def get_serializer_class(self):
         if self.action == "list":
             return PerformanceListSerializer
-
         if self.action == "retrieve":
             return PerformanceDetailSerializer
-
-        return PerformanceSerializer
+        return self.serializer_class
 
     @extend_schema(
         parameters=[
@@ -218,7 +210,7 @@ class ReservationViewSet(
     queryset = Reservation.objects.prefetch_related(
         "tickets__performance__play",
         "tickets__performance__theatre_hall"
-    ).all()
+    )
     pagination_class = ReservationPagination
     serializer_class = ReservationSerializer
     permission_classes = [IsAuthenticated]
@@ -237,7 +229,7 @@ class ReservationViewSet(
     def get_serializer_class(self):
         if self.action == "list":
             return ReservationListSerializer
-        return ReservationSerializer
+        return self.serializer_class
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
