@@ -37,7 +37,7 @@ def movie_image_file_path(instance, filename):
 class Play(models.Model):
     title = models.CharField(max_length=150, unique=True)
     description = models.TextField()
-    duration = models.PositiveIntegerField(default="60")
+    duration = models.PositiveIntegerField(default=60)
     genres = models.ManyToManyField(Genre, related_name="plays", blank=True)
     actors = models.ManyToManyField(Actor, related_name="plays", blank=True)
     image = models.ImageField(null=True, upload_to=movie_image_file_path)
@@ -82,7 +82,9 @@ class Performance(models.Model):
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reservations",
     )
 
     class Meta:
